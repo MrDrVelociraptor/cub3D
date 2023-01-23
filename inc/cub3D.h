@@ -9,8 +9,8 @@
 # include <math.h>
 # include <stdio.h>
 
-# define WIDTH 1920
-# define HEIGHT 1080
+# define WIDTH 500
+# define HEIGHT 500
 # define ESC 53
 # define UP 126
 # define DOWN 125
@@ -37,9 +37,12 @@ typedef struct s_image {
 
 typedef struct vec3
 {
-    float x;
-    float y;
-    float z;
+    int x;
+    int y;
+	int cx;
+    int cy;
+    int z;
+	int center;
 
 } t_vec3;
 
@@ -51,14 +54,15 @@ typedef struct {
 } t_data;
 
 int	closeWin(void);
-int	keypress(int key, t_data *data);
+int	move_sqaure(int key, t_data *data);
 void	put_pixel(t_image *img, int x, int y, int color);
+// void	put_pixelz(t_image *img, t_vec3 *pos, int color);
 
 void	my_mlx_window(void *win, void *mlx, t_data *data);
 t_image	new_image(t_mlx *mlx, int width, int height);
 
 void render_square_outline_v3(t_image *img, t_vec3 *pos, int size, int color);
-void render_circle_v3(t_image *img, t_vec3 center, float radius, int color);
+void render_circle_v3(t_image *img, t_vec3 *pos, float radius, int color);
 
 
 #endif

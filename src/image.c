@@ -46,3 +46,22 @@ void	put_pixel(t_image *img, int x, int y, int color)
 		i -= 8;
 	}
 }
+
+void	put_pixelz(t_image *img, t_vec3 *pos, int color)
+{
+	char    *pixel;
+	int		i;
+
+	i = img->bpp - 8;
+    pixel = img->addr + (pos->y * img->ln_len + pos->x * (img->bpp / 8));
+	while (i >= 0)
+	{
+		/* big endian, MSB is the leftmost bit */
+		if (img->endian != 0)
+			*pixel++ = (color >> i) & 0xFF;
+		/* little endian, LSB is the leftmost bit */
+		else
+			*pixel++ = (color >> (img->bpp - 8 - i)) & 0xFF;
+		i -= 8;
+	}
+}

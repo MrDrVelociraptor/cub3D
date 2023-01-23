@@ -6,58 +6,69 @@ int	closeWin(void)
 	return (0);
 }
 
-int	keypress(int key, t_data *data)
+int	move_sqaure(int key, t_data *data)
 {
-	// printf("data address: %p\n", data);
-    // printf("key: %d\n", key);
-	// printf("IN KEYPRESS FIRST ******** pos.x = %f ---- pos.y = %f\n", data->pos.x, data->pos.y);
-    if (data == NULL)
-    {
-        printf("data is NULL\n");
-        return (0);
-    }
-		if (key == 126)
+	if (key == UP)
+	{
+		// printf("before move data->pos.y = %d\n", data->pos.y);
+		data->pos.y -= 10;
+		// printf("(data->pos.y = %d\n", data->pos.y);
+		// printf("(data->pos.y m HEIGHT) + data->size === %d\n", (data->pos.y % HEIGHT) + data->size);
+
+		if (data->pos.y < 0)
 		{
-			printf("UP PRESSED\n");
-			printf("data address: %p\n", data);
-    		printf("key: %d\n", key);
-			printf("pos.x = %f ---- pos.y = %f\n", data->pos.x, data->pos.y);
-			data->pos.y -= 10;
-			printf("AFTER UP PRESS pos.x = %f ---- pos.y = %f\n", data->pos.x, data->pos.y);
+			// data->pos.y = (HEIGHT - data->size) % data->pos.y;
+			// data->pos.y = (data->pos.y % HEIGHT) + (data->size * 2);
+			data->pos.y = HEIGHT - data->size;
+
+			printf("data->pos.y = data->pos.y m HEIGHT = %d\n", (data->pos.y % HEIGHT) + data->size);
+			printf("data->pos.y = %d\n", data->pos.y);
 		}
-		if (key == 125)
+		
+	}
+	else if (key == DOWN)
+	{
+		printf("(data->pos.y = %d\n", data->pos.y);
+
+		data->pos.y += 10;
+		if (data->pos.y > HEIGHT)
 		{
-			printf("DOWN PRESSED\n");
-			printf("data address: %p\n", data);
-    		printf("key: %d\n", key);
-			printf("pos.x = %f ---- pos.y = %f\n", data->pos.x, data->pos.y);
-			data->pos.y += 10;
-			printf("AFTER DOWN PRESS pos.x = %f ---- pos.y = %f\n", data->pos.x, data->pos.y);
+			data->pos.y = data->pos.y - HEIGHT;
 		}
-		if (key == 123)
+		
+		
+	}
+	else if (key == LEFT)
+	{
+		printf("data->pos.x = %d ---- WIDTH + ((int)data->pos.x mod WIDTH) == %d\n", data->pos.x, WIDTH - data->size);
+		data->pos.x -= 10;
+		if (data->pos.x < 0)
 		{
-			printf("LEFT PRESSED\n");
-			printf("data address: %p\n", data);
-    		printf("key: %d\n", key);
-			printf("pos.x = %f ---- pos.y = %f\n", data->pos.x, data->pos.y);
-			data->pos.x -= 10;
-			printf("AFTER LEFT PRESS pos.x = %f ---- pos.y = %f\n", data->pos.x, data->pos.y);
+			data->pos.x = WIDTH + (data->pos.x % WIDTH);
+			printf("data->pos.x = %d ---- WIDTH + ((int)data->pos.x mod WIDTH) == %d\n", data->pos.x, WIDTH - data->size);
 		}
-		if (key == 124)
+
+
+	}
+	else if (key == RIGHT)
+	{
+		printf("data->pos.x = %d ---- data->pos.x m WIDTH == %d\n", data->pos.x, data->pos.x % WIDTH);
+		data->pos.x += 10;
+		if (data->pos.x > WIDTH)
 		{
-			printf("RIGHT PRESSED\n");
-			printf("data address: %p\n", data);
-    		printf("key: %d\n", key);
-			printf("pos.x = %f ---- pos.y = %f\n", data->pos.x, data->pos.y);
-			data->pos.x += 10;
-			printf("AFTER RIGHT PRESS pos.x = %f ---- pos.y = %f\n", data->pos.x, data->pos.y);	
+			data->pos.x = data->pos.x % WIDTH;
+			printf("data->pos.x = %d ---- data->pos.x m WIDTH == %d\n", data->pos.x, data->pos.x % WIDTH);
 		}
-			printf("data->img * = %p\n", data->img);
-			data->img->img = mlx_new_image(data->img->ptr->mlx, WIDTH, HEIGHT);
-			data->img->addr = mlx_get_data_addr(data->img->img, &data->img->bpp, &data->img->ln_len,
-			&data->img->endian);
-			render_square_outline_v3(data->img, &data->pos, data->size, data->color);
-			mlx_put_image_to_window(data->img->ptr->mlx, data->img->ptr->win, data->img->img, 0, 0);
+	}
+	data->img->img = mlx_new_image(data->img->ptr->mlx, WIDTH, HEIGHT);
+	data->img->addr = mlx_get_data_addr(data->img->img, &data->img->bpp, &data->img->ln_len,
+	&data->img->endian);
+
+	// render_circle_v3(data->img, &data->pos, data->size, data->color);
+	render_square_outline_v3(data->img, &data->pos, data->size, data->color);
+	// put_pixelz(data->img, &data->pos, 0x00FF0000);
+
+	mlx_put_image_to_window(data->img->ptr->mlx, data->img->ptr->win, data->img->img, 0, 0);
 	if (key == ESC)
 		closeWin();
 	return (0);
@@ -65,7 +76,7 @@ int	keypress(int key, t_data *data)
 
 void	my_mlx_window(void *win, void *mlx, t_data *data)
 {
-	mlx_hook(win, 2, 1L << 0, keypress, data);
+	mlx_hook(win, 2, 1L << 0, move_sqaure, data);
 	mlx_hook(win, 17, 1L << 17, closeWin, 0);
 	mlx_loop(mlx);
 }
