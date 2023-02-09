@@ -1,42 +1,105 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shapes.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nspeedy <nspeedy@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/09 08:31:41 by nspeedy           #+#    #+#             */
+/*   Updated: 2023/02/09 08:31:41 by nspeedy          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3D.h"
 
-void render_square_outline_v3(t_image *img, t_vec3 *pos, int size, int color)
+char	**allocate_map(const char *buf, int *temp_height, t_world *world)
 {
-    int i;
-    int j;
-	// mlx_clear_window(img->ptr->mlx, img->ptr->win);
-    /* Draw the top and bottom lines of the square */
-    for (i = pos->x; i < pos->x + size; i++) {
-        put_pixel(img, i, pos->y, color);
-        put_pixel(img, i, pos->y + size - 1, color);
-    }
-    /* Draw the left and right lines of the square */
-    for (j = pos->y; j < pos->y + size; j++) {
-        put_pixel(img, pos->x, j, color);
-        put_pixel(img, pos->x + size - 1, j, color);
-    }
+	char	*temp;
+	int		i;
+
+	i = 0;
+	temp = ft_strdup(buf);
+	*temp_height = ft_count_words(temp, '\n') + 1;
+	world->map_file = (char **)malloc(*temp_height * sizeof(char *));
+	while (temp)
+		world->map_file[i++] = ft_strsep(&temp, "\n");
+	return (world->map_file);
 }
 
-// void render_circle_v3(t_image *img, t_vec3 center, float radius, int color)
-// {
-//     float angle;
-//     t_vec3 point;
-//     for (angle = 0; angle < 2 * M_PI; angle += 0.01)
-//     {
-//         point.x = center.x + radius * cos(angle);
-//         point.y = center.y + radius * sin(angle);
-//         put_pixel(img, point.x, point.y, color);
-//     }
-// }
+char	**get_real_map(t_world *world, int *temp_height)
+{
+	int		i;
+	int		j;
+	int		q;
+	char	*temp;
 
-// void render_circle_v3(t_image *img, t_vec3 *pos, float radius, int color)
-// {
-//     float angle;
-//     t_vec3 point;
-//     for (angle = 0; angle < 2 * M_PI; angle += 0.01)
-//     {
-//         point.cx = pos->cx + radius * cos(angle);
-//         point.cy = pos->cy + radius * sin(angle);
-//         put_pixel(img, point.cx, point.cy, color);
-//     }
-// }
+	i = 0;
+	j = 0;
+	q = 0;
+	world->m_height = 0;
+	while (ft_strncmp(world->map_file[i], "1", 1)
+		&& ft_strncmp(world->map_file[i], "0", 1))
+	{
+		i++;
+	}
+	world->m_height = *temp_height - i;
+	world->map_actual = (char **)malloc(world->m_height * sizeof(char *));
+	while (j < world->m_height)
+	{
+		world->map_actual[j] = ft_strdup(world->map_file[i]);
+		world->m_width[j] = *(int *)malloc(sizeof(int) * ft_strlen(world->map_actual[j]));
+		world->m_width[j] = ft_strlen(world->map_actual[j]);
+		printf("world->m_width[j] = %i world->m_height = %i\n", world->m_width[j], world->m_height);
+		i++;
+		j++;
+	}
+	return (world->map_actual);
+}
+
+static void	show_map(t_world *world, int *temp_height)
+{
+	int	i;
+
+	i = 0;
+	while (i < *temp_height)
+	{
+		printf("%s\n", world->map_file[i]);
+		i++;
+	}
+}
+
+static void	show_map2(t_world *world)
+{
+	int	i;
+
+	i = 0;
+	while (i < world->m_height)
+	{
+		printf("%s\n", world->map_actual[i]);
+		i++;
+	}
+}
+
+void	parse_map_file(const char *filename, t_world *world)
+{
+	int		fd;
+	char	buf[1024];
+	int		bytes_read;
+	int		temp_height;
+
+	fd = open(filename, O_RDONLY);
+	open_fail(fd);
+	bytes_read = read(fd, buf, sizeof buf - 1);
+	buf[bytes_read] = '\0';
+	temp_height = 0;
+	world->map_file = allocate_map(buf, &temp_height, world);
+	world->map_actual = get_real_map(world, &temp_height);
+	close_fail(fd);
+	printf("\033[0;31mPRINTING ENTIRE FILE\n");
+	show_map(world, &temp_height);
+	printf("\033[0m\n");
+	printf("\033[0;34mPRINTING MAP AREA\n");
+	show_map2(world);
+	printf("\033[0m\n");
+	printf("\033[0;32mPROGRAM RAN\033[0m\n");
+}
