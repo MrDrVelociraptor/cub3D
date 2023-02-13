@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nspeedy <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: nspeedy <nspeedy@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 13:33:18 by nspeedy           #+#    #+#             */
-/*   Updated: 2022/01/19 15:06:55 by nspeedy          ###   ########.fr       */
+/*   Updated: 2023/02/09 10:28:08 by nspeedy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,6 @@ void	ft_hex(t_args *arg, char c);
 void	ft_int(t_args *arg);
 void	ft_unsigned(t_args *arg);
 void	ft_freearry(void **arry);
+char 	*ft_strsep(char **str, const char *delim);
+
 #endif

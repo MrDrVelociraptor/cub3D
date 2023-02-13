@@ -6,7 +6,7 @@
 /*   By: nspeedy <nspeedy@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 13:44:56 by nspeedy           #+#    #+#             */
-/*   Updated: 2023/02/09 13:45:23 by nspeedy          ###   ########.fr       */
+/*   Updated: 2023/02/09 16:26:12 by nspeedy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,28 @@ int	ft_count_words(const char *s, char c)
 		s++;
 	}
 	return (count);
+}
+
+void	print_file_contents(t_world *world, int *temp_height)
+{
+	int	i;
+
+	i = 0;
+	while (i < *temp_height)
+	{
+		printf("%s\n", world->map_file[i]);
+		i++;
+	}
+}
+
+void	print_map(t_world *world)
+{
+	int	i;
+
+	i = 0;
+	while (i < world->m_height)
+	{
+		printf("%s\n", world->map_actual[i]);
+		i++;
+	}
 }
